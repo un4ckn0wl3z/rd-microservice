@@ -26,6 +26,8 @@ export class AppController {
   })
 
   this.consumer.connect()
+  this.producer.connect()
+
   this.consumer
       .on('ready', () => {
           this.consumer.subscribe(['test']);
@@ -47,6 +49,7 @@ export class AppController {
 
   public handleTestTopic(message: Kafka.Message){
     this.logger.log(`[+] MESSAGE INCOMMING: ${message.value.toString()}`)
+    this.producer.produce()
   }
 
 }
