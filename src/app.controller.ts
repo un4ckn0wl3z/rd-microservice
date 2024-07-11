@@ -1,6 +1,5 @@
 import { Controller, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
-import * as Kafka from 'node-rdkafka';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { DummyConsumeEvent } from './events/dummy.consume.event';
 import { RdKafkaService } from './rdkafka.service';
