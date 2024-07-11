@@ -49,7 +49,12 @@ export class AppController {
 
   public handleTestTopic(message: Kafka.Message){
     this.logger.log(`[+] MESSAGE INCOMMING: ${message.value.toString()}`)
-    this.producer.produce()
+    this.producer.produce('topic',
+      null,
+      Buffer.from('Awesome message'),
+      'Stormwind',
+      Date.now(),
+    );
   }
 
 }
