@@ -35,11 +35,11 @@ export class AppController {
   }
 
 
-  @OnEvent(DummyConsumeEvent.topic)
-  public async handleDummyConsumeEvent(message: Kafka.Message) : Promise<void> {
+  @OnEvent(DummyConsumeEvent.topic, { async: true })
+  public async handleDummyConsumeEvent(event: DummyConsumeEvent) : Promise<void> {
     
-    this.logger.log(`[+] INCOMMING MESSAGE FROM TOPIC ${message.topic}: ${message.value.toString()}`)
-    this.logger.log(`[+] PAYLOAD: ${message.value.toString()}`)
+    this.logger.log(`[+] INCOMMING MESSAGE FROM TOPIC ${event.message.topic}: ${event.message.value.toString()}`)
+    this.logger.log(`[+] PAYLOAD: ${event.message.value.toString()}`)
 
     this.rd.producer.produce(DummyProduceEvent.topic,
       null,
