@@ -1,14 +1,6 @@
-import { Controller, Get, Inject, Logger } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
 import * as Kafka from 'node-rdkafka';
-import { Reflector, REQUEST } from '@nestjs/core';
-
-
-const Topic = (name: string) => {
-  return (target, propertyKey, descriptor) => {
-    Reflect.defineMetadata('topic', name, target, propertyKey)
-  }
-}
 
 @Controller()
 export class AppController {
@@ -20,10 +12,7 @@ export class AppController {
 
   constructor(
     private readonly appService: AppService,
-    private readonly reflector: Reflector,
-    @Inject(REQUEST) private context,
   ) {
-    const ctx = this.reflector.get('topic', this.context.getHandler())
 
     this.consumer = new Kafka.KafkaConsumer({
       'metadata.broker.list': 'localhost:9092',
@@ -55,9 +44,9 @@ export class AppController {
   }
 
 
-  @Topic('test')
+
   public handleTestTopic(message: Kafka.Message){
-    this.logger.log(`[+] MESSAGE INCOMMING: ${message}`)
+    this.logger.log(`[+] MESSAGE INCOMMING: ${JSON.stringify(message)}`)
   }
 
 }
