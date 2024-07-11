@@ -46,7 +46,7 @@ export class AppController {
 
 
   public handleTestTopic(message: Kafka.Message){
-    this.logger.log(`[+] MESSAGE INCOMMING: ${JSON.stringify(message)}`)
+    this.logger.log(`[+] MESSAGE INCOMMING: ${message.value.toString()}`)
   }
 
 }
