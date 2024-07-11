@@ -1,10 +1,13 @@
 import { Controller, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
 import * as Kafka from 'node-rdkafka';
+import * as promiseLimit from 'promise-limit'
+
 
 @Controller()
 export class AppController {
 
+  private limit = promiseLimit();
   private logger = new Logger(AppController.name)
 
   private consumer: Kafka.KafkaConsumer;
@@ -34,18 +37,21 @@ export class AppController {
           this.consumer.consume();
       })
       .on('data', (data) => {
-          switch (data.topic) {
-            case 'test':
-              this.handleTestTopic(data)
-              break;
-            default:
-              this.logger.log('[-] UNKNOWN TOPIC.')
-              break;
-          }
+        this.limit(() => this.handler(data))
       });
   }
 
 
+  private async handler(message: Kafka.Message) {
+    switch (message.topic) {
+      case 'test':
+        this.handleTestTopic(message)
+        break;
+      default:
+        this.logger.log('[-] UNKNOWN TOPIC.')
+        break;
+    }
+  }
 
   public handleTestTopic(message: Kafka.Message){
     this.logger.log(`[+] MESSAGE INCOMMING: ${message.value.toString()}`)
