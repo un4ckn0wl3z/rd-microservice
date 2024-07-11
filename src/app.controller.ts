@@ -1,6 +1,10 @@
 import { Controller, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
 import * as Kafka from 'node-rdkafka';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { DummyConsumeEvent } from './events/dummy.consume.event';
+import { RdKafkaService } from './rdkafka.service';
+import { DummyProduceEvent } from './events/dummy.produce.event';
 
 
 @Controller()
@@ -8,52 +12,36 @@ export class AppController {
 
   private logger = new Logger(AppController.name)
 
-  private consumer: Kafka.KafkaConsumer;
-  private producer: Kafka.Producer;
-
    constructor(
     private readonly appService: AppService,
+    private eventEmitter: EventEmitter2,
+    private rd: RdKafkaService
   ) {
 
-    this.consumer = new Kafka.KafkaConsumer({
-      'metadata.broker.list': 'localhost:9092',
-      'group.id': 'kafka'
+  this.rd.consumer.connect()
+  this.rd.producer.connect()
 
-  }, {})
-
-  this.producer = new Kafka.Producer({
-      'metadata.broker.list': 'localhost:9092',
-      'client.id': 'kafka'          
-  })
-
-  this.consumer.connect()
-  this.producer.connect()
-
-  this.consumer
+  this.rd.consumer
       .on('ready', () => {
-          this.consumer.subscribe(['test']);
-          this.consumer.consume();
+        this.rd.consumer.subscribe([DummyConsumeEvent.topic]);
+        this.rd.consumer.consume();
       })
       .on('data', (message) => {
-        this.handler(message)
+        this.eventEmitter.emit(
+          message.topic,
+          new DummyConsumeEvent().message = message,
+        );
       });
   }
 
-  private async handler(message: Kafka.Message): Promise<void> {
-          switch (message.topic) {
-            case 'test':
-              this.handleTestTopic(message)
-              break;
-            default:
-              this.logger.log('[-] UNKNOWN TOPIC.')
-              break;
-          }
-  }
 
+  @OnEvent(DummyConsumeEvent.topic)
+  public async handleDummyConsumeEvent(message: Kafka.Message) : Promise<void> {
+    
+    this.logger.log(`[+] INCOMMING MESSAGE FROM TOPIC ${message.topic}: ${message.value.toString()}`)
+    this.logger.log(`[+] PAYLOAD: ${message.value.toString()}`)
 
-  public async handleTestTopic(message: Kafka.Message) : Promise<void> {
-    this.logger.log(`[+] MESSAGE INCOMMING: ${message.value.toString()}`)
-    this.producer.produce('topic',
+    this.rd.producer.produce(DummyProduceEvent.topic,
       null,
       Buffer.from('Awesome message'),
       'Stormwind',
