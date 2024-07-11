@@ -48,7 +48,7 @@ export class AppController {
               this.handleTestTopic(data)
               break;
             default:
-              this.logger.log('[-] Unknown topic.')
+              this.logger.log('[-] UNKNOWN TOPIC.')
               break;
           }
       });
