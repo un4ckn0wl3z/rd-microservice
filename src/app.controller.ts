@@ -42,7 +42,7 @@ export class AppController {
 
     this.rd.producer.produce(DummyProduceEvent.topic,
       null,
-      Buffer.from('Awesome message'),
+      Buffer.from(this.appService.getHello()),
       'Stormwind',
       Date.now(),
     );
