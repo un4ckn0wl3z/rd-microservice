@@ -11,7 +11,7 @@ export class AppController {
   private consumer: Kafka.KafkaConsumer;
   private producer: Kafka.Producer;
 
-  constructor(
+   constructor(
     private readonly appService: AppService,
   ) {
 
@@ -51,7 +51,7 @@ export class AppController {
   }
 
 
-  public async handleTestTopic(message: Kafka.Message){
+  public async handleTestTopic(message: Kafka.Message) : Promise<void> {
     this.logger.log(`[+] MESSAGE INCOMMING: ${message.value.toString()}`)
     this.producer.produce('topic',
       null,
