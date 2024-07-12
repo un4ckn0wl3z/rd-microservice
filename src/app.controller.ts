@@ -5,7 +5,6 @@ import { ConsumeEvent } from './events/consume.event';
 import { RdKafkaService } from './rdkafka.service';
 import { Topic } from './enum/topic.enum';
 
-
 @Controller()
 export class AppController {
 
