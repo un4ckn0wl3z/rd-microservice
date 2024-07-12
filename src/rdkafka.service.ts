@@ -15,13 +15,19 @@ export class RdKafkaService {
             'group.id': 'kafka'
       
         }, {})
-        this.logger.log("[+] Kafka.KafkaConsumer initialized")
       
         this.m_producer = new Kafka.Producer({
             'metadata.broker.list': 'localhost:9092',
             'client.id': 'kafka'          
         })
+
+        this.consumer.connect()
+        this.logger.log("[+] Kafka.KafkaConsumer initialized")
+
+        this.producer.connect()
         this.logger.log("[+] Kafka.Producer initialized")
+
+        
     }
     
     get consumer(): Kafka.KafkaConsumer {
