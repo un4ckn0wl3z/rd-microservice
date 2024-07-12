@@ -27,7 +27,6 @@ export class RdKafkaService {
         this.producer.connect()
         this.logger.log("[+] Kafka.Producer initialized")
 
-        
     }
     
     get consumer(): Kafka.KafkaConsumer {
