@@ -26,7 +26,7 @@ export class AppController {
         const consumeEvent = new ConsumeEvent();
         consumeEvent.payload = payload
         this.eventEmitter.emit(
-          payload.topic,
+          consumeEvent.payload.topic,
           consumeEvent
         );
       });
