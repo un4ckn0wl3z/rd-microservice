@@ -34,10 +34,8 @@ export class AppController {
 
   @OnEvent(Topic.DUMMY_CONSUME_TOPIC, { async: true })
   public async handleDummyConsumeEvent(event: ConsumeEvent) : Promise<void> {
-    
-    this.logger.log(`[+] INCOMMING MESSAGE FROM TOPIC ${event.payload.topic}: ${event.payload.value.toString()}`)
+    this.logger.log(`[+] INCOMMING MESSAGE FROM TOPIC ${event.payload.topic}}`)
     this.logger.log(`[+] PAYLOAD: ${event.payload.value.toString()}`)
-
     this.rd.producer.produce(Topic.DUMMY_PRODUCE_TOPIC,
       null,
       Buffer.from(this.appService.getHello()),
